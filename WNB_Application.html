@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>WNB Factory — Job Application</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F4F2; color: #1A1A1A; min-height: 100vh; }
+
+  .header { background: #D85A30; padding: 20px 20px 16px; }
+  .header-row { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 42px; height: 42px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; letter-spacing: -0.3px; flex-shrink: 0; }
+  .header h1 { font-size: 20px; font-weight: 700; color: white; }
+  .header p { font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+
+  .progress-bar { height: 3px; background: rgba(255,255,255,0.3); margin-top: 14px; border-radius: 2px; }
+  .progress-fill { height: 100%; background: white; border-radius: 2px; transition: width 0.3s ease; }
+
+  .step-label { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+
+  .body { padding: 20px 16px 40px; max-width: 480px; margin: 0 auto; }
+
+  .section-title { font-size: 11px; font-weight: 600; color: #993C1D; letter-spacing: 0.7px; text-transform: uppercase; margin-bottom: 12px; }
+
+  .card { background: white; border-radius: 14px; padding: 16px; margin-bottom: 14px; border: 0.5px solid #E0DED8; }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; color: #6B6B6B; margin-bottom: 5px; font-weight: 500; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 12px 14px; border: 1px solid #E0DED8; border-radius: 10px;
+    font-size: 16px; color: #1A1A1A; background: #FAFAFA; appearance: none;
+    font-family: inherit; transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #D85A30; background: white;
+  }
+  .field textarea { resize: none; line-height: 1.5; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6B6B' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 0.5px solid #F0EEE8; }
+  .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .toggle-row:first-child { padding-top: 0; }
+  .toggle-label { font-size: 14px; color: #1A1A1A; }
+  .toggle-sub { font-size: 12px; color: #6B6B6B; margin-top: 1px; }
+  .toggle-opts { display: flex; gap: 6px; }
+  .toggle-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid #E0DED8; font-size: 13px; font-weight: 500; color: #6B6B6B; background: white; cursor: pointer; transition: all 0.15s; }
+  .toggle-btn.active { background: #D85A30; border-color: #D85A30; color: white; }
+
+  .day-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .day-btn { padding: 8px 4px; border-radius: 8px; border: 1px solid #E0DED8; font-size: 12px; font-weight: 500; color: #6B6B6B; background: white; cursor: pointer; text-align: center; transition: all 0.15s; }
+  .day-btn.active { background: #FAECE7; border-color: #D85A30; color: #993C1D; }
+
+  .pos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0; }
+  .pos-btn { padding: 12px 10px; border-radius: 10px; border: 1px solid #E0DED8; font-size: 13px; color: #1A1A1A; background: white; cursor: pointer; text-align: left; transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
+  .pos-btn .pos-dot { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #D0CEC8; flex-shrink: 0; transition: all 0.15s; }
+  .pos-btn.active { background: #FAECE7; border-color: #D85A30; }
+  .pos-btn.active .pos-dot { background: #D85A30; border-color: #D85A30; }
+
+  .nav { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-back { flex: 1; padding: 15px; border-radius: 12px; border: 1px solid #E0DED8; font-size: 15px; font-weight: 600; color: #6B6B6B; background: white; cursor: pointer; }
+  .btn-next { flex: 2; padding: 15px; border-radius: 12px; border: none; font-size: 15px; font-weight: 600; color: white; background: #D85A30; cursor: pointer; transition: background 0.15s; }
+  .btn-next:active { background: #993C1D; }
+  .btn-single { width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 15px; font-weight: 600; color: white; background: #D85A30; cursor: pointer; margin-top: 20px; }
+
+  .step { display: none; }
+  .step.active { display: block; }
+
+  .success { text-align: center; padding: 40px 20px; }
+  .success-icon { width: 64px; height: 64px; background: #D85A30; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+  .success-icon svg { width: 32px; height: 32px; }
+  .success h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .success p { font-size: 14px; color: #6B6B6B; line-height: 1.6; }
+  .summary-card { background: white; border-radius: 14px; padding: 16px; margin-top: 20px; border: 0.5px solid #E0DED8; text-align: left; }
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #F0EEE8; font-size: 13px; }
+  .summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .summary-row span:first-child { color: #6B6B6B; }
+  .summary-row span:last-child { font-weight: 500; color: #1A1A1A; text-align: right; max-width: 55%; }
+
+  .error-msg { color: #D85A30; font-size: 12px; margin-top: 4px; display: none; }
+  .field.error input, .field.error select, .field.error textarea { border-color: #D85A30; }
+  .field.error .error-msg { display: block; }
+
+  .req { color: #D85A30; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">WNB</div>
+    <div>
+      <h1>Job Application</h1>
+      <p>WNB Factory — Covington, GA</p>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+  <div class="step-label" id="stepLabel">Step 1 of 4 — Basic info</div>
+</div>
+
+<div class="body">
+
+  <!-- STEP 1: Basic Info -->
+  <div class="step active" id="step1">
+    <p class="section-title">Basic information</p>
+    <div class="card">
+      <div class="row-2">
+        <div class="field" id="f-fname">
+          <label>First name <span class="req">*</span></label>
+          <input type="text" id="fname" placeholder="Jane" autocomplete="given-name">
+          <div class="error-msg">Required</div>
+        </div>
+        <div class="field" id="f-lname">
+          <label>Last name <span class="req">*</span></label>
+          <input type="text" id="lname" placeholder="Doe" autocomplete="family-name">
+          <div class="error-msg">Required</div>
+        </div>
+      </div>
+      <div class="field" id="f-phone">
+        <label>Phone number <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="(770) 000-0000" autocomplete="tel">
+        <div class="error-msg">Required</div>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="jane@email.com" autocomplete="email">
+      </div>
+      <div class="field" id="f-dob">
+        <label>Date of birth <span class="req">*</span></label>
+        <input type="date" id="dob">
+        <div class="error-msg">Required</div>
+      </div>
+    </div>
+
+    <p class="section-title">Eligibility</p>
+    <div class="card">
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">18 or older?</div>
+        </div>
+        <div class="toggle-opts">
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'age18','Yes')">Yes</button>
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'age18','No')">No</button>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Reliable transportation?</div>
+          <div class="toggle-sub">Car, ride, or bus</div>
+        </div>
+        <div class="toggle-opts">
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'transport','Yes')">Yes</button>
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'transport','No')">No</button>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-single" onclick="nextStep(1)">Continue</button>
+  </div>
+
+  <!-- STEP 2: Position & Availability -->
+  <div class="step" id="step2">
+    <p class="section-title">Position</p>
+    <div class="card">
+      <div class="field"><label>Applying for <span class="req">*</span></label></div>
+      <div class="pos-grid" id="posGrid">
+        <button type="button" class="pos-btn" onclick="selectPos(this,'Cashier / Front counter')">
+          <span class="pos-dot"></span>Cashier / Front counter
+        </button>
+        <button type="button" class="pos-btn" onclick="selectPos(this,'Kitchen crew')">
+          <span class="pos-dot"></span>Kitchen crew
+        </button>
+        <button type="button" class="pos-btn" onclick="selectPos(this,'Shift lead')">
+          <span class="pos-dot"></span>Shift lead
+        </button>
+        <button type="button" class="pos-btn" onclick="selectPos(this,'Any available')">
+          <span class="pos-dot"></span>Any available
+        </button>
+      </div>
+    </div>
+
+    <p class="section-title">Availability</p>
+    <div class="card">
+      <div class="field">
+        <label>Desired start date</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="field">
+        <label>Hours available per week</label>
+        <select id="hours">
+          <option value="">Select</option>
+          <option>Less than 20 hrs</option>
+          <option>20–30 hrs</option>
+          <option>30–40 hrs</option>
+          <option>Full-time (40+ hrs)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Available days</label>
+        <div class="day-grid" id="dayGrid">
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Mon</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Tue</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Wed</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Thu</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Fri</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Sat</button>
+          <button type="button" class="day-btn" onclick="toggleDay(this)">Sun</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
+      <button type="button" class="btn-next" onclick="nextStep(2)">Continue</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Experience -->
+  <div class="step" id="step3">
+    <p class="section-title">Work experience</p>
+    <div class="card">
+      <div class="field">
+        <label>Food service experience</label>
+        <select id="foodExp">
+          <option value="">Select</option>
+          <option>No experience</option>
+          <option>Less than 1 year</option>
+          <option>1–2 years</option>
+          <option>3+ years</option>
+        </select>
+      </div>
+      <div class="toggle-row" style="padding-top:4px">
+        <div class="toggle-label">Cash handling experience?</div>
+        <div class="toggle-opts">
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'cashExp','Yes')">Yes</button>
+          <button type="button" class="toggle-btn" onclick="selectToggle(this,'cashExp','No')">No</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Previous employer</label>
+        <input type="text" id="prevEmployer" placeholder="Company name, position, how long">
+      </div>
+    </div>
+
+    <p class="section-title">Additional comments</p>
+    <div class="card">
+      <div class="field">
+        <label>Why do you want to work at WNB Factory?</label>
+        <textarea id="comments" rows="4" placeholder="Tell us a bit about yourself..."></textarea>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn-back" onclick="prevStep(3)">Back</button>
+      <button type="button" class="btn-next" onclick="nextStep(3)">Review</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Review & Submit -->
+  <div class="step" id="step4">
+    <p class="section-title">Review your application</p>
+    <div class="card">
+      <div class="summary-row"><span>Name</span><span id="s-name">—</span></div>
+      <div class="summary-row"><span>Phone</span><span id="s-phone">—</span></div>
+      <div class="summary-row"><span>Email</span><span id="s-email">—</span></div>
+      <div class="summary-row"><span>Date of birth</span><span id="s-dob">—</span></div>
+      <div class="summary-row"><span>18 or older</span><span id="s-age18">—</span></div>
+      <div class="summary-row"><span>Transportation</span><span id="s-transport">—</span></div>
+      <div class="summary-row"><span>Position</span><span id="s-pos">—</span></div>
+      <div class="summary-row"><span>Start date</span><span id="s-start">—</span></div>
+      <div class="summary-row"><span>Hours/week</span><span id="s-hours">—</span></div>
+      <div class="summary-row"><span>Available days</span><span id="s-days">—</span></div>
+      <div class="summary-row"><span>Food experience</span><span id="s-foodExp">—</span></div>
+      <div class="summary-row"><span>Cash handling</span><span id="s-cashExp">—</span></div>
+      <div class="summary-row"><span>Previous employer</span><span id="s-prev">—</span></div>
+    </div>
+
+    <div class="nav">
+      <button type="button" class="btn-back" onclick="prevStep(4)">Edit</button>
+      <button type="button" class="btn-next" id="submitBtn" onclick="submitForm()">Submit</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="success">
+      <div class="success-icon">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 16l6 6 12-12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2>Application submitted!</h2>
+      <p>We've received your application and will be in touch soon. Thank you for your interest in joining the WNB Factory team.</p>
+      <div class="summary-card">
+        <div class="summary-row"><span>Applicant</span><span id="ss-name">—</span></div>
+        <div class="summary-row"><span>Position</span><span id="ss-pos">—</span></div>
+        <div class="summary-row"><span>Location</span><span>Covington, GA</span></div>
+        <div class="summary-row"><span>Submitted</span><span id="ss-date">—</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var currentStep = 1;
+  var data = { age18:'', transport:'', cashExp:'', position:'', days:[] };
+
+  var stepLabels = ['Basic info','Position & availability','Experience','Review'];
+  var stepCount = 4;
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+    if(n === 'success') {
+      document.getElementById('stepSuccess').classList.add('active');
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('stepLabel').textContent = 'Application complete';
+    } else {
+      document.getElementById('step'+n).classList.add('active');
+      document.getElementById('progressFill').style.width = ((n/stepCount)*100)+'%';
+      document.getElementById('stepLabel').textContent = 'Step '+n+' of '+stepCount+' — '+stepLabels[n-1];
+      window.scrollTo(0,0);
+    }
+  }
+
+  function selectToggle(btn, key, val) {
+    var parent = btn.closest('.toggle-opts');
+    parent.querySelectorAll('.toggle-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    data[key] = val;
+  }
+
+  function toggleDay(btn) {
+    btn.classList.toggle('active');
+    var day = btn.textContent;
+    var idx = data.days.indexOf(day);
+    if(idx > -1) data.days.splice(idx,1); else data.days.push(day);
+  }
+
+  function selectPos(btn, pos) {
+    document.querySelectorAll('.pos-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    data.position = pos;
+  }
+
+  function validate1() {
+    var ok = true;
+    ['fname','lname','phone','dob'].forEach(function(id){
+      var field = document.getElementById('f-'+id) || document.getElementById(id).closest('.field');
+      var val = document.getElementById(id).value.trim();
+      if(!val){ field.classList.add('error'); ok=false; }
+      else { field.classList.remove('error'); }
+    });
+    return ok;
+  }
+
+  function validate2() {
+    if(!data.position){ alert('Please select a position.'); return false; }
+    return true;
+  }
+
+  function nextStep(n) {
+    if(n===1 && !validate1()) return;
+    if(n===2 && !validate2()) return;
+    if(n===3) { populateReview(); }
+    currentStep = n+1;
+    showStep(currentStep);
+  }
+
+  function prevStep(n) {
+    currentStep = n-1;
+    showStep(currentStep);
+  }
+
+  function formatDate(d) {
+    if(!d) return '—';
+    var parts = d.split('-');
+    if(parts.length<3) return d;
+    return parts[1]+'/'+parts[2]+'/'+parts[0];
+  }
+
+  function populateReview() {
+    document.getElementById('s-name').textContent = (document.getElementById('fname').value+' '+document.getElementById('lname').value).trim() || '—';
+    document.getElementById('s-phone').textContent = document.getElementById('phone').value || '—';
+    document.getElementById('s-email').textContent = document.getElementById('email').value || '—';
+    document.getElementById('s-dob').textContent = formatDate(document.getElementById('dob').value);
+    document.getElementById('s-age18').textContent = data.age18 || '—';
+    document.getElementById('s-transport').textContent = data.transport || '—';
+    document.getElementById('s-pos').textContent = data.position || '—';
+    document.getElementById('s-start').textContent = formatDate(document.getElementById('startDate').value);
+    document.getElementById('s-hours').textContent = document.getElementById('hours').value || '—';
+    document.getElementById('s-days').textContent = data.days.length ? data.days.join(', ') : '—';
+    document.getElementById('s-foodExp').textContent = document.getElementById('foodExp').value || '—';
+    document.getElementById('s-cashExp').textContent = data.cashExp || '—';
+    document.getElementById('s-prev').textContent = document.getElementById('prevEmployer').value || '—';
+  }
+
+  function submitForm() {
+    var btn = document.getElementById('submitBtn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    var formData = {
+      name: (document.getElementById("fname").value+" "+document.getElementById("lname").value).trim(),
+      phone: document.getElementById("phone").value,
+      email: document.getElementById("email").value,
+      dob: document.getElementById("dob").value,
+      age18: data.age18,
+      transportation: data.transport,
+      position: data.position,
+      start_date: document.getElementById("startDate").value,
+      hours_per_week: document.getElementById("hours").value,
+      available_days: data.days.join(", "),
+      food_experience: document.getElementById("foodExp").value,
+      cash_handling: data.cashExp,
+      previous_employer: document.getElementById("prevEmployer").value,
+      comments: document.getElementById("comments").value
+    };
+    fetch("https://formspree.io/f/xppaqybk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(formData)
+    }).then(function(r){ return r.json(); }).then(function(r){
+      if(r.ok !== false) { showSuccess(); } else { alert("Submission failed. Please try again."); }
+    }).catch(function(){ alert('Network error. Please check your connection.'); btn.textContent='Submit'; btn.disabled=false; });
+  }
+  function showSuccess() {
+    document.getElementById('ss-name').textContent = (document.getElementById('fname').value+' '+document.getElementById('lname').value).trim();
+    document.getElementById('ss-pos').textContent = data.position || '—';
+    var now = new Date();
+    document.getElementById('ss-date').textContent = (now.getMonth()+1)+'/'+now.getDate()+'/'+now.getFullYear();
+    showStep('success');
+  }
+</script>
+</body>
+</html>
